@@ -1,35 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, AccessibilityInfo, findNodeHandle } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // Home Screen Component
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [text, onChangeText] = useState('Enter Text');
-  const [number, onChangeNumber] = useState('');
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    console.log('Home Screen: Mounted');
-    return () => {
-      console.log('Home Screen: Unmounted');
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log('Home Screen: Updated');
-  });
+  const openModalButtonRef = useRef(null); // Ref for the "Open Modal" button
 
   const handleOpenModal = () => {
-    setModalVisible(true);
+    setModalVisible(true); // Open the modal
   };
 
   const handleCloseModal = () => {
-    setModalVisible(false);
+    setModalVisible(false); // Close the modal
+    
+    // Focus the "Open Modal" button after the modal is closed
+    if (openModalButtonRef.current) {
+      const reactTag = findNodeHandle(openModalButtonRef.current);
+      if (reactTag) {
+        AccessibilityInfo.setAccessibilityFocus(reactTag);
+      }
+    }
   };
-
-  const onPress = () => setCount(prevCount => prevCount + 1);
 
   return (
     <View style={styles.container}>
@@ -39,30 +32,10 @@ const HomeScreen = () => {
         </Text>
       </View>
 
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        value={text}
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeNumber}
-        value={number}
-        placeholder="useless placeholder"
-      />
-
-    <View style={styles.countContainer}>
-      <View style={styles.countText}>
-        <Text>Count: {count}</Text>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Text>Press Here</Text>
-      </TouchableOpacity>
-    </View>
-
       {/* Open Modal Button */}
       <TouchableOpacity
-        style={styles.modalButton}
+        ref={openModalButtonRef}
+        style={styles.button}
         onPress={handleOpenModal}
       >
         <Text style={styles.buttonText}>Open Modal</Text>
@@ -87,7 +60,7 @@ const HomeScreen = () => {
 
             {/* Close Modal Button */}
             <TouchableOpacity
-              style={styles.modalButton}
+              style={styles.button}
               onPress={handleCloseModal}
             >
               <Text style={styles.buttonText}>Close Modal</Text>
@@ -111,13 +84,13 @@ const App = () => {
           name="Home"
           component={HomeScreen}
           options={{
-            title: 'Welcome to My App',
+            title: 'Welcome to My App', // Navbar title
             headerStyle: {
-              backgroundColor: '#007bff',
+              backgroundColor: '#007bff', // Navbar background color
             },
-            headerTintColor: '#fff',
+            headerTintColor: '#fff', // Navbar text color
             headerTitleStyle: {
-              fontWeight: 'bold',
+              fontWeight: 'bold', // Navbar title font weight
             },
           }}
         />
@@ -135,7 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     paddingHorizontal: 20,
   },
-  modalButton: {
+  button: {
     backgroundColor: '#007bff',
     padding: 10,
     borderRadius: 5,
@@ -150,16 +123,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
         paddingVertical: 20,
   },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    borderColor: '#FF5733',
-  },
   paragraphText: {
     fontSize: 16,
-    color: '#FF5733',
+    color: '#555',
     textAlign: 'center',
     lineHeight: 24,
   },
@@ -179,20 +145,6 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 18,
     marginBottom: 20,
-  },
-  countContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 10,
-  },
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#DDDDDD',
-    padding: 10,
-  },
-  countText: {
-    alignItems: 'center',
-    padding: 10,
   },
 });
 

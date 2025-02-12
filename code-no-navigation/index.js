@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, AccessibilityInfo, findNodeHandle } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -9,6 +9,7 @@ const HomeScreen = () => {
   const [text, onChangeText] = useState('Enter Text');
   const [number, onChangeNumber] = useState('');
   const [count, setCount] = useState(0);
+  const textInputRef1 = useRef(null);
 
   useEffect(() => {
     console.log('Home Screen: Mounted');
@@ -31,6 +32,14 @@ const HomeScreen = () => {
 
   const onPress = () => setCount(prevCount => prevCount + 1);
 
+  const handleAccessibilityFocus = (inputRef) => {
+    const reactTag = findNodeHandle(inputRef.current);
+    if (reactTag) {
+      AccessibilityInfo.setAccessibilityFocus(reactTag);
+    }
+  };
+  
+
   return (
     <View style={styles.container}>
         <View style={styles.paragraphContainer}>
@@ -40,15 +49,19 @@ const HomeScreen = () => {
       </View>
 
       <TextInput
+        ref={textInputRef1}
         style={styles.input}
         onChangeText={onChangeText}
         value={text}
+        accessible={true}
+        onSubmitEditing={() => handleAccessibilityFocus(textInputRef1)}
       />
       <TextInput
         style={styles.input}
         onChangeText={onChangeNumber}
         value={number}
         placeholder="useless placeholder"
+        keyboardType="numeric"
       />
 
     <View style={styles.countContainer}>
@@ -155,11 +168,10 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    borderColor: '#FF5733',
   },
   paragraphText: {
     fontSize: 16,
-    color: '#FF5733',
+    color: '#555',
     textAlign: 'center',
     lineHeight: 24,
   },
