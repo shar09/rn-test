@@ -150,10 +150,11 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    borderColor: '#FF5733'
   },
   paragraphText: {
     fontSize: 16,
-    color: '#555',
+    color: '#FF5733',
     textAlign: 'center',
     lineHeight: 24,
   },
