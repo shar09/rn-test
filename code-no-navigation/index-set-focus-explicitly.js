@@ -41,7 +41,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-        <View style={styles.paragraphContainer}>
+      <View style={styles.paragraphContainer}>
         <Text style={styles.paragraphText}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </Text>
@@ -63,16 +63,15 @@ const HomeScreen = () => {
         keyboardType="numeric"
       />
 
-    <View style={styles.countContainer}>
-      <View style={styles.countText}>
-        <Text>Count: {count}</Text>
+      <View style={styles.countContainer}>
+        <View style={styles.countText}>
+          <Text>Count: {count}</Text>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={onPress}>
+          <Text>Press Here</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button} onPress={onPress}>
-        <Text>Press Here</Text>
-      </TouchableOpacity>
-    </View>
 
-      {/* Open Modal Button */}
       <TouchableOpacity
         style={styles.modalButton}
         onPress={handleOpenModal}
@@ -86,7 +85,6 @@ const HomeScreen = () => {
         </Text>
       </View>
 
-      {/* Modal */}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -97,7 +95,6 @@ const HomeScreen = () => {
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>This is a Modal</Text>
 
-            {/* Close Modal Button */}
             <TouchableOpacity
               style={styles.modalButton}
               onPress={handleCloseModal}
@@ -160,7 +157,7 @@ const styles = StyleSheet.create({
   },
   paragraphContainer: {
     paddingHorizontal: 20,
-        paddingVertical: 20,
+    paddingVertical: 20,
   },
   input: {
     height: 40,

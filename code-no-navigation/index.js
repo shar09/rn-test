@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Button } from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+// Home Screen Component
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
   const [text, onChangeText] = useState('Enter Text');
   const [number, onChangeNumber] = useState('');
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     console.log('Home Screen: Mounted');
-    return () => console.log('Home Screen: Unmounted');
+    return () => {
+      console.log('Home Screen: Unmounted');
+    };
   }, []);
 
-  useEffect(() => console.log('Home Screen: Updated'));
+  useEffect(() => {
+    console.log('Home Screen: Updated');
+  });
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+  };
 
   const onPress = () => setCount(prevCount => prevCount + 1);
 
@@ -22,12 +35,21 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <View style={styles.paragraphContainer}>
         <Text style={styles.paragraphText}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </Text>
       </View>
 
-      <TextInput style={styles.input} onChangeText={onChangeText} value={text} />
-      <TextInput style={styles.input} onChangeText={onChangeNumber} value={number} placeholder="useless placeholder" />
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeText}
+        value={text}
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={onChangeNumber}
+        value={number}
+        placeholder="useless placeholder"
+      />
 
       <View style={styles.countContainer}>
         <View style={styles.countText}>
@@ -38,64 +60,68 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.modalButton} onPress={() => navigation.navigate('Details')}>
-        <Text style={styles.buttonText}>Go to Details</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.modalButton} onPress={() => navigation.navigate('MyModal')}>
+      <TouchableOpacity
+        style={styles.modalButton}
+        onPress={handleOpenModal}
+      >
         <Text style={styles.buttonText}>Open Modal</Text>
       </TouchableOpacity>
-
       <View style={styles.paragraphContainer}>
         <Text style={styles.paragraphText}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
         </Text>
       </View>
+
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>This is a Modal</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleCloseModal}
+            >
+              <Text style={styles.buttonText}>Close Modal</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
-const ModalScreen = () => {
-  const navigation = useNavigation();
+// Create Stack Navigator
+const Stack = createStackNavigator();
 
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>This is a modal!</Text>
-      <Button title="Close Modal" onPress={() => navigation.goBack()} />
-    </View>
-  );
-};
-
-const DetailsScreen = () => {
-  const navigation = useNavigation();
-
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text style={{ fontSize: 30 }}>Details</Text>
-      <Button title="Go to Details again" onPress={() => navigation.push('Details')} />
-      <Button title="Back to Home" onPress={() => navigation.goBack()} />
-    </View>
-  );
-};
-
-const RootStack = createStackNavigator();
-
-export default function App() {
+// App Component
+const App = () => {
   return (
     <NavigationContainer>
-      <RootStack.Navigator>
-        <RootStack.Group>
-          <RootStack.Screen name="Home" component={HomeScreen} options={{ title: 'Welcome to My App', headerStyle: { backgroundColor: '#007bff' }, headerTintColor: '#fff', headerTitleStyle: { fontWeight: 'bold' } }} />
-          <RootStack.Screen name="Details" component={DetailsScreen} />
-        </RootStack.Group>
-        <RootStack.Group screenOptions={{ headerShown: false, presentation: 'modal' }}>
-          <RootStack.Screen name="MyModal" component={ModalScreen} />
-        </RootStack.Group>
-      </RootStack.Navigator>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: 'Welcome to My App',
+            headerStyle: {
+              backgroundColor: '#007bff',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
 
+// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -124,13 +150,29 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    borderColor: '#FF5733'
   },
   paragraphText: {
     fontSize: 16,
-    color: '#FF5733',
+    color: '#555',
     textAlign: 'center',
     lineHeight: 24,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
   },
   countContainer: {
     flex: 1,
@@ -147,3 +189,5 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
+
+export default App;
