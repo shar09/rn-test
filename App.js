@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Button, UIManager, findNodeHandle } from 'react-native';
-import { NavigationContainer, useFocusEffect, useNavigation } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Button } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const HomeScreen = () => {
@@ -15,32 +15,6 @@ const HomeScreen = () => {
   }, []);
 
   useEffect(() => console.log('Home Screen: Updated'));
-
-  const targetElementRef = useRef(null);
-
-  // Function to set accessibility focus
-  const setAccessibilityFocus = () => {
-    console.log("set focus");
-    const node = findNodeHandle(targetElementRef.current);
-    if (node) {
-      UIManager.sendAccessibilityEvent(
-        node,
-        UIManager.AccessibilityEventTypes.typeViewFocused
-      );
-    }
-  };
-
-  // Use useFocusEffect to set focus when the screen is focused
-  useFocusEffect(
-    React.useCallback(() => {
-      // Do something when the screen is focused
-      setAccessibilityFocus();
-      return () => {
-        // Do something when the screen is unfocused
-        // Useful for cleanup functions
-      };
-    }, [])
-  );
 
   const onPress = () => setCount(prevCount => prevCount + 1);
 
@@ -72,9 +46,9 @@ const HomeScreen = () => {
         <Text style={styles.buttonText}>Open Modal</Text>
       </TouchableOpacity>
 
-      <View accessible={true} ref={targetElementRef} style={styles.paragraphContainer}>
+      <View style={styles.paragraphContainer}>
         <Text style={styles.paragraphText}>
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </Text>
       </View>
     </View>
@@ -85,7 +59,7 @@ const ModalScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={{ flex: 1, gap: 20, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ fontSize: 30 }}>This is a modal!</Text>
       <Button title="Close Modal" onPress={() => navigation.goBack()} />
     </View>
@@ -96,7 +70,7 @@ const DetailsScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={{ flex: 1, gap: 20, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text style={{ fontSize: 30 }}>Details</Text>
       <Button title="Go to Details again" onPress={() => navigation.push('Details')} />
       <Button title="Back to Home" onPress={() => navigation.goBack()} />

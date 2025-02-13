@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Button, UIManager, findNodeHandle } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Button, UIManager, findNodeHandle, Platform } from 'react-native';
 import { NavigationContainer, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -20,13 +20,18 @@ const HomeScreen = () => {
 
   // Function to set accessibility focus
   const setAccessibilityFocus = () => {
-    console.log("set focus");
     const node = findNodeHandle(targetElementRef.current);
     if (node) {
-      UIManager.sendAccessibilityEvent(
-        node,
-        UIManager.AccessibilityEventTypes.typeViewFocused
-      );
+      if (Platform.OS === 'ios') {
+        // set focus twice to ensure it works
+        AccessibilityInfo.setAccessibilityFocus(node);
+        AccessibilityInfo.setAccessibilityFocus(node);
+      } else {
+        UIManager.sendAccessibilityEvent(
+          node,
+          UIManager.AccessibilityEventTypes.typeViewFocused
+        );
+      }
     }
   };
 
@@ -34,8 +39,10 @@ const HomeScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       // Do something when the screen is focused
+      console.log('screen focused');
       setAccessibilityFocus();
       return () => {
+        console.log('screen unfocused');
         // Do something when the screen is unfocused
         // Useful for cleanup functions
       };
