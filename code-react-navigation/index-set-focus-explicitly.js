@@ -22,16 +22,10 @@ const HomeScreen = () => {
   const setAccessibilityFocus = () => {
     const node = findNodeHandle(targetElementRef.current);
     if (node) {
-      if (Platform.OS === 'ios') {
-        // set focus twice to ensure it works
-        AccessibilityInfo.setAccessibilityFocus(node);
-        AccessibilityInfo.setAccessibilityFocus(node);
-      } else {
-        UIManager.sendAccessibilityEvent(
-          node,
-          UIManager.AccessibilityEventTypes.typeViewFocused
-        );
-      }
+      // set focus twice to ensure it works
+      AccessibilityInfo.setAccessibilityFocus(node);
+      AccessibilityInfo.setAccessibilityFocus(node);
+      
     }
   };
 
